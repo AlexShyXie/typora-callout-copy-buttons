@@ -1,11 +1,12 @@
 {
-  "id": "callout-copy-buttons",
-  "name": "Callout Copy Buttons",
-  "version": "1.0.2",
-  "minAppVersion": "1.7.7",
-  "description": "Adds copy buttons to callout blocks in your notes.",
-  "author": "Aly Thobani",
-  "authorUrl": "https://github.com/alythobani/",
-  "fundingUrl": "https://buymeacoffee.com/alythobani",
-  "isDesktopOnly": false
+  "id": "local.callout-copy-button",
+  "name": "Callout Copy Button",
+  "description": "Add buttons to each native alert (.md-alert). Three independent toggles: select the whole callout, copy the body as plain text, copy the body as Markdown. Ported from alythobani/obsidian-callout-copy-buttons.",
+  "author": "alythobani, ported to typora-community-plugin",
+  "authorUrl": "https://github.com/alythobani/obsidian-callout-copy-buttons",
+  "repo": "local/typora-plugin-callout-copy-button",
+  "version": "1.0.0",
+  "minAppVersion": "1.8.0",
+  "minCoreVersion": "2.8.2",
+  "platforms": ["win32", "linux", "darwin"]
 }

@@ -1,0 +1,56 @@
+/* Callout Copy Button — styles for typora-community-plugin.
+   File MUST be named style.css: the core hardcodes reading
+   manifest.dir/style.css (core.js loadPlugin), not styles.css. */
+
+/* .typ-buttons is position:absolute (core.css) and needs a positioned
+   ancestor. Themes rarely set position on .md-alert, so anchor it here.
+   No-op if your theme already positions .md-alert. */
+.md-alert {
+  position: relative;
+}
+
+/* Keep the button group inside the alert's top-right corner, above the
+   title line's colored background. */
+.md-alert > .typ-buttons {
+  top: 2px;
+  right: 4px;
+  z-index: 1;
+}
+
+/* Fixed square buttons, content dead-centered.
+   - width/height + padding:0 overrides core.css's `padding: 2px 4px`
+     (which made buttons lopsided when the icon font was missing)
+   - font-size:0 kills any theme font metrics that would inflate the box;
+     the letter chip sets its own size explicitly
+   - inline-flex centering works for both the SVG icon and the P/M letters */
+.md-alert > .typ-buttons button.typ-block-operate-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin-left: 4px;
+  line-height: 1;
+  font-size: 0;
+  background: rgba(127, 127, 127, 0.18);
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+.md-alert > .typ-buttons button.typ-block-operate-button:hover {
+  opacity: 1;
+}
+
+/* "P" / "M" letter chips — the same visual language as the original
+   Obsidian plugin. Explicit size, independent of theme fonts. */
+.md-alert .typ-callout-letter {
+  font-family: sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.md-alert .typ-callout-icon {
+  display: block;
+}

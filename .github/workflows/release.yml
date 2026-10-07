@@ -3,86 +3,47 @@ name: Release
 on:
   push:
     tags:
-      - '*.*.*'
+      - '[0-9]*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'tag to release (must exist)'
+        required: true
 
-permissions:
-  contents: write
-  id-token: write
-  attestations: write
 
 jobs:
   release:
-    name: Build, attest, and publish release
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
         with:
-          node-version: '22'
-          cache: 'npm'
+          fetch-depth: 0
 
-      - name: Install dependencies
-        run: npm ci
+      # This plugin is dependency-free plain JavaScript: no build step needed,
+      # just zip the plugin files (flat layout, manifest.json at zip root).
+      - name: Pack plugin.zip
+        run: zip -9 plugin.zip manifest.json main.js style.css README.md README.en.md
 
-      - name: Ensure tag matches manifest and package versions
-        shell: bash
+      - name: Generate release body
         run: |
-          node <<'NODE'
-          const fs = require('fs');
-          const tag = process.env.GITHUB_REF_NAME;
-          const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
-          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          tag="${{ github.ref_name }}"
+          prev_tag=$(git describe --tags --abbrev=0 "$tag^" 2>/dev/null || echo "")
+          if [ -n "$prev_tag" ]; then
+            echo "## What's Changed" > release_body.md
+            git log "$prev_tag..$tag" --oneline --no-decorate >> release_body.md
+          else
+            echo "## Initial release" > release_body.md
+            git log --oneline --no-decorate "$tag" >> release_body.md
+          fi
 
-          if (!/^[0-9]+\.[0-9]+\.[0-9]+$/.test(tag)) {
-            throw new Error(`Release tag must be x.y.z without a v prefix. Got: ${tag}`);
-          }
-
-          if (manifest.version !== tag) {
-            throw new Error(`manifest.json version ${manifest.version} does not match tag ${tag}`);
-          }
-
-          if (pkg.version !== tag) {
-            throw new Error(`package.json version ${pkg.version} does not match tag ${tag}`);
-          }
-
-          console.log(`Version check passed for ${tag}`);
-          NODE
-
-      - name: Build
-        run: npm run build
-
-      - name: Typecheck
-        run: npm run check
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Format check
-        run: npm run format:check
-
-      - name: Test
-        run: npm test
-
-      - name: Validate Obsidian release assets
-        run: npm run release:check -- ${{ github.ref_name }}
-
-      - name: Generate artifact attestations
-        uses: actions/attest@v4
-        with:
-          subject-path: |
-            main.js
-            manifest.json
-            styles.css
-
-      - name: Create GitHub release
+      - name: Create Release
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release create "${GITHUB_REF_NAME}" \
-            main.js manifest.json styles.css \
-            --title "${GITHUB_REF_NAME}" \
-            --notes "Release ${GITHUB_REF_NAME}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create "${{ github.ref_name }}"
+          --title "${{ github.ref_name }}"
+          --notes-file release_body.md
+          --verify-tag
+          plugin.zip

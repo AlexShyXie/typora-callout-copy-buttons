@@ -1,51 +1,33 @@
-# Callout Copy Buttons
+# Callout Copy Button (typora-community-plugin)
+[English](README.md) | [简体中文](README.zh.md)
 
-An [Obsidian plugin](https://obsidian.md/plugins?id=callout-copy-buttons) that adds copy buttons to callout blocks in your notes.
+Ported from [alythobani/obsidian-callout-copy-buttons](https://github.com/alythobani/obsidian-callout-copy-buttons), this plugin targets Typora's **native GitHub-style alerts** (the `> [!NOTE]` syntax, rendered as `.md-alert` in Typora ≥ 1.8).
+Each alert gets a row of small buttons in its top-right corner, controlled by **three independent toggles** in the settings (matching the toggle model of the original plugin's Reading mode) — if you only want one button, just turn off the other two. By default, only "Select" is enabled.
 
-## Features
-
-- Adds 'Copy (Markdown)' and 'Copy (plain text)' buttons to callout blocks in your notes.
-- Customizable settings to control the appearance and behavior of the copy buttons (e.g., show/hide, format indicators, etc.).
-- Reactively syncs the UI with your chosen settings, so you can see how they affect the editor in real-time.
-
-## Usage examples
-
-### Copy (Markdown) button
-
-> [!NOTE]
-> Due to technical limitations, 'Copy (Markdown)' buttons are only available in Source Mode and top-level Reading Mode callout blocks (i.e. not in Live Preview callouts, or in nested Reading Mode callouts).
-
-This button copies content in Markdown format, stripping out the callout block syntax.
-
-![Copy Markdown Button](./assets/copy-markdown-button.png)
-
-Clicking 'Copy (Markdown)' above would copy the following content to your clipboard:
-
-```md
-#### Example H4 title
-- **Educating the mind without educating the heart is no education at all.**
-- *It is the mark of an educated mind to be able to entertain a thought without accepting it.*
+## Three Behaviors (using this callout as an example)
+```markdown
+> [!Note]
+> type: strikeout
+> page: 1
 ```
+| Toggle                                       | Button         | Click Effect                                                 | Output for the Example Above              |
+| -------------------------------------------- | -------------- | ------------------------------------------------------------ | ----------------------------------------- |
+| Show "Select callout" button (on by default) | 🖱 pointer icon | **Selects the entire callout** (including the `[!Note]` title line); then press Ctrl+C to use Typora's own copy logic, identical to a manual selection | A selection appears in the editor         |
+| Show "Copy (plain text)" button              | `P`            | Copies the **body content** as plain text: no title line, no `> ` prefix, no inline markup | `type: strikeout\npage: 1`                |
+| Show "Copy (Markdown)" button                | `M`            | Copies the **entire callout** as Markdown source: the `> [!Note]` title line plus all `> ` prefixes intact, so pasting into any Markdown editor still yields a callout | `> [!note]\n> type: strikeout\n> page: 1` |
+![image-20261007170835784](./vx_images/image-20261007170835784.png)
 
-### Copy (plain text) button
+## Installation
 
-This button copies content as plain text (copied directly from the rendered preview), without any Markdown syntax.
-
-![Copy Plain Text Button](./assets/copy-plain-text-button.png)
-
-Clicking 'Copy (plain text)' above would copy the following content to your clipboard:
-
-```md
-Example H4 title
-Educating the mind without educating the heart is no education at all.
-It is the mark of an educated mind to be able to entertain a thought without accepting it.
+1. Install [typora-community-plugin/typora-community-plugin: Typora plugin system for enhancing your editing experience.](https://github.com/typora-community-plugin/typora-community-plugin)
+2. Copy the entire folder to `~/.typora/community-plugins/plugins/callout-copy-button/`
+3. Restart Typora → enable "Callout Copy Button" in the plugin center (requires [typora-plugin-core](https://github.com/typora-community-plugin/typora-plugin-core) to be installed)
+4. Open any document containing `> [!NOTE]`; hovering over an alert's top-right corner will reveal the buttons
+Settings entry: Plugin Center → Callout Copy Button → three toggles. Changes take effect immediately (no restart needed, no need to reopen documents).
+## File Structure
 ```
-
-> [!NOTE]
-> Under the hood, this uses the `innerText` HTML attribute, which may lead to slight inconsistencies in the copied content depending on whether a callout is folded or expanded; particularly in terms of whitespace.
-
-## Contributing & Feedback
-
-My capacity may be limited for this plugin, but feel free to [open an issue](https://github.com/alythobani/obsidian-callout-copy-buttons/issues) for any bug reports or feature requests and I'll take a look if I do have time. Also feel free to submit a pull request or fork the project.
-
-Have a great day and try to make someone else's day great too!
+callout-copy-button/
+├── main.js        # All logic (single file, ESM, ~380 lines)
+├── manifest.json  # tcp plugin manifest
+├── style.css      # Button positioning and P/M letter styling (auto-loaded by core; the filename must not be changed)
+```
