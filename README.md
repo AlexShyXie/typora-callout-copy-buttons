@@ -15,6 +15,8 @@ Each alert gets a row of small buttons in its top-right corner, controlled by **
 | Show "Select callout" button (on by default) | 🖱 pointer icon | **Selects the entire callout** (including the `[!Note]` title line); then press Ctrl+C to use Typora's own copy logic, identical to a manual selection | A selection appears in the editor         |
 | Show "Copy (plain text)" button              | `P`            | Copies the **body content** as plain text: no title line, no `> ` prefix, no inline markup | `type: strikeout\npage: 1`                |
 | Show "Copy (Markdown)" button                | `M`            | Copies the **entire callout** as Markdown source: the `> [!Note]` title line plus all `> ` prefixes intact, so pasting into any Markdown editor still yields a callout | `> [!note]\n> type: strikeout\n> page: 1` |
+
+
 ![image-20261007170835784](./vx_images/image-20261007170835784.png)
 
 ## Installation

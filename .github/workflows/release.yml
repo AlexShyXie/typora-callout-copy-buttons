@@ -24,7 +24,7 @@ jobs:
       # This plugin is dependency-free plain JavaScript: no build step needed,
       # just zip the plugin files (flat layout, manifest.json at zip root).
       - name: Pack plugin.zip
-        run: zip -9 plugin.zip manifest.json main.js style.css README.md README.en.md
+        run: zip -9 plugin.zip manifest.json main.js style.css
 
       - name: Generate release body
         run: |
